@@ -1,46 +1,52 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+
+const navItems = [
+  { path: "/",             label: "Dashboard",    icon: "📊" },
+  { path: "/products",     label: "Products",     icon: "📦" },
+  { path: "/stock",        label: "Stock",        icon: "🏭" },
+  { path: "/reports",      label: "Reports",      icon: "📋" },
+  { path: "/analytics",    label: "Analytics",    icon: "📈" },
+  { path: "/transactions", label: "Transactions", icon: "💸" },
+  { path: "/profile",      label: "Profile",      icon: "👤" },
+  { path: "/about",        label: "About Us",     icon: "📘" },
+  { path: "/contact",      label: "Contact Us",   icon: "📞" },
+];
 
 export default function Sidebar() {
+  const location = useLocation();
+
   return (
-    <div className="w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white min-h-screen p-6 shadow-xl">
+    <div className="w-64 bg-surface-low min-h-screen p-6 flex flex-col">
 
-      <h1 className="text-2xl font-bold mb-8">Inventory</h1>
+      {/* Brand */}
+      <h1 className="font-display text-2xl font-bold text-primary tracking-tight mb-10">
+        Inventory
+      </h1>
 
-      <nav className="space-y-3">
-        <Link to="/" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
-          Dashboard
-        </Link>
-
-        <Link to="/products" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
-          Products
-        </Link>
-
-        <Link to="/stock" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
-          Stock
-        </Link>
-
-        <Link to="/reports" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
-          Reports
-        </Link>
-
-        <Link to="/analytics" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">      
-         Analytics
-        </Link>
-
-        <Link to="/transactions" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
-         Transactions
-        </Link>
-
-        <Link to="/profile" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
-          Profile
-        </Link>
-        <Link to="/about" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
-          About Us
-        </Link>
-        <Link to="/contact" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
-          Contact Us
-        </Link>
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1">
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`
+                flex items-center gap-3 px-4 py-2.5 rounded-lg
+                text-sm font-medium font-body
+                transition-all duration-200
+                ${isActive
+                  ? "bg-surface-lowest text-primary border-l-2 border-primary shadow-ambient"
+                  : "text-on-surface/70 hover:bg-surface-high hover:text-on-surface"
+                }
+              `}
+            >
+              <span className="text-base">{item.icon}</span>
+              {item.label}
+            </Link>
+          );
+        })}
       </nav>
 
     </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const API = "http://127.0.0.1:5000/products";
 
@@ -50,48 +51,62 @@ export default function AddProductModal({ product, onClose, onSaved }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white w-96 p-6 rounded-xl shadow-xl">
-        <h2 className="text-xl font-bold mb-4">
-          {isEdit ? "Edit Product" : "Add Product"}
-        </h2>
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 flex items-center justify-center z-50"
+        style={{ backgroundColor: "rgba(24, 28, 32, 0.3)" }}
+      >
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="bg-surface-lowest/95 backdrop-blur-xl w-[420px] p-8 rounded-2xl shadow-ambient"
+        >
+          <h2 className="font-display text-xl font-bold text-on-surface mb-6">
+            {isEdit ? "Edit Product" : "Add Product"}
+          </h2>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            className="w-full border p-2 mb-3 rounded"
-            placeholder="Product name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <input
+              className="ledger-input"
+              placeholder="Product name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
 
-          <input
-            type="number"
-            className="w-full border p-2 mb-4 rounded"
-            placeholder="Quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            required
-          />
+            <input
+              type="number"
+              className="ledger-input"
+              placeholder="Quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              required
+            />
 
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-400 text-white px-4 py-2 rounded"
-            >
-              Cancel
-            </button>
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-5 py-2.5 rounded-lg font-body font-medium text-on-surface/60 bg-surface-high hover:bg-surface-highest transition-colors"
+              >
+                Cancel
+              </button>
 
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              {isEdit ? "Update" : "Save"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+              <button
+                type="submit"
+                className="btn-primary"
+              >
+                {isEdit ? "Update" : "Save"}
+              </button>
+            </div>
+          </form>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

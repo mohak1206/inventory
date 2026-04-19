@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -117,10 +118,12 @@ export default function Products() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
 
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Products 📦</h2>
+        <h2 className="font-display text-3xl font-bold text-on-surface">
+          Products
+        </h2>
         <button
           onClick={() => {
             setEditingProduct(null);
@@ -128,93 +131,115 @@ export default function Products() {
             setQuantity("");
             setShowModal(true);
           }}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="btn-primary"
         >
           + Add Product
         </button>
       </div>
 
       {/* PRODUCT LIST */}
-      <div className="space-y-4">
-        {products.map((product) => (
-          <div
+      <div className="space-y-3">
+        {products.map((product, i) => (
+          <motion.div
             key={product.id}
-            className="bg-white shadow p-4 rounded flex justify-between items-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.04 }}
+            className="bg-surface-lowest rounded-xl p-5 flex justify-between items-center
+                       transition-colors duration-200 hover:bg-surface-high group"
           >
             <div>
-              <h3 className="font-bold">{product.name}</h3>
-              <p className="text-gray-600">Qty: {product.quantity}</p>
+              <h3 className="font-body font-semibold text-on-surface text-base">
+                {product.name}
+              </h3>
+              <p className="text-on-surface/50 text-sm font-body mt-1">
+                Qty: {product.quantity}
+              </p>
             </div>
 
-            <div className="space-x-2">
+            <div className="flex gap-2 opacity-70 group-hover:opacity-100 transition-opacity">
               <button
                 onClick={() => openEditModal(product)}
-                className="bg-yellow-500 text-white px-3 py-1 rounded"
+                className="bg-tertiary-container text-on-tertiary-container px-4 py-1.5 rounded-lg text-sm font-body font-medium transition-colors hover:opacity-80"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(product.id)}
-                className="bg-red-600 text-white px-3 py-1 rounded"
+                className="bg-error-container text-on-error-container px-4 py-1.5 rounded-lg text-sm font-body font-medium transition-colors hover:opacity-80"
               >
                 Delete
               </button>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
-      {/* MODAL */}
-      {showModal && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-40">
-          <div className="bg-white p-6 rounded shadow w-96 space-y-4">
-            <h3 className="text-xl font-bold">
-              {editingProduct ? "Edit Product" : "Add Product"}
-            </h3>
+      {/* MODAL — Glassmorphism */}
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 flex justify-center items-center z-50"
+            style={{ backgroundColor: "rgba(24, 28, 32, 0.3)" }}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="bg-surface-lowest/95 backdrop-blur-xl rounded-2xl shadow-ambient w-[420px] p-8 space-y-6"
+            >
+              <h3 className="font-display text-xl font-bold text-on-surface">
+                {editingProduct ? "Edit Product" : "Add Product"}
+              </h3>
 
-            <input
-              type="text"
-              placeholder="Product Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
+              <input
+                type="text"
+                placeholder="Product Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="ledger-input"
+              />
 
-            <input
-              type="number"
-              placeholder="Quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
+              <input
+                type="number"
+                placeholder="Quantity"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                className="ledger-input"
+              />
 
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setShowModal(false)}
-                className="bg-gray-400 text-white px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
-
-              {editingProduct ? (
+              <div className="flex justify-end gap-3 pt-2">
                 <button
-                  onClick={handleUpdate}
-                  className="bg-blue-600 text-white px-4 py-2 rounded"
+                  onClick={() => setShowModal(false)}
+                  className="px-5 py-2.5 rounded-lg font-body font-medium text-on-surface/60 bg-surface-high hover:bg-surface-highest transition-colors"
                 >
-                  Update
+                  Cancel
                 </button>
-              ) : (
-                <button
-                  onClick={handleAdd}
-                  className="bg-green-600 text-white px-4 py-2 rounded"
-                >
-                  Save
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+
+                {editingProduct ? (
+                  <button
+                    onClick={handleUpdate}
+                    className="btn-primary"
+                  >
+                    Update
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleAdd}
+                    className="btn-primary"
+                  >
+                    Save
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -4,14 +4,14 @@ import Navbar from "../component/Navbar";
 
 export default function MainLayout({ children }) {
   return (
-    <div className="flex bg-gray-100 min-h-screen">
+    <div className="flex bg-surface min-h-screen font-body">
 
       <Sidebar />
 
       <div className="flex-1 flex flex-col">
         <Navbar />
 
-        <div className="p-6">
+        <div className="p-8">
           {children}
         </div>
       </div>

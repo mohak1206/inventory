@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -7,62 +8,76 @@ export default function Login() {
   const navigate = useNavigate();
 
  const handleLogin = async (e) => {
-  e.preventDefault();
+   e.preventDefault();
 
-  const response = await fetch("http://127.0.0.1:5000/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+   const response = await fetch("http://127.0.0.1:5000/login", {
+     method: "POST",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify({ email, password })
+   });
 
-  const data = await response.json();
+   const data = await response.json();
 
-  if (response.ok) {
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("role", data.role);
-    localStorage.setItem("username", data.name);
-    navigate("/");
-  } else {
-    alert(data.msg);
-  }
-};
+   if (response.ok) {
+     localStorage.setItem("isLoggedIn", "true");
+     localStorage.setItem("role", data.role);
+     localStorage.setItem("username", data.name);
+     navigate("/");
+   } else {
+     alert(data.msg);
+   }
+ };
+
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <form
+    <div className="flex items-center justify-center min-h-screen bg-surface">
+      <motion.form
         onSubmit={handleLogin}
-        className="bg-white shadow-lg p-8 rounded-xl w-96"
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-surface-lowest shadow-ambient p-10 rounded-2xl w-[400px] space-y-6"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Login 🔐
-        </h2>
+        {/* Header */}
+        <div className="text-center space-y-2">
+          <h2 className="font-display text-2xl font-bold text-on-surface">
+            Welcome Back
+          </h2>
+          <p className="font-body text-sm text-on-surface/50">
+            Sign in to your inventory account
+          </p>
+        </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full mb-4 p-3 border rounded-lg"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        {/* Inputs */}
+        <div className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            className="ledger-input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full mb-6 p-3 border rounded-lg"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <input
+            type="password"
+            placeholder="Password"
+            className="ledger-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
 
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
+          className="btn-primary w-full py-3"
         >
-          Login
+          Sign In
         </button>
 
-        <p className="text-sm text-gray-500 mt-4 text-center">
-          Use: admin@inventory.com / 1234
+        <p className="text-xs text-on-surface/40 text-center font-body">
+          Demo: admin@inventory.com / 1234
         </p>
-      </form>
+      </motion.form>
     </div>
   );
 }

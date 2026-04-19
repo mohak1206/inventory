@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export default function Stock() {
   const [products, setProducts] = useState([]);
@@ -47,42 +48,46 @@ export default function Stock() {
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-6">
-        Stock Management 📦
+    <div className="space-y-8">
+      <h2 className="font-display text-3xl font-bold text-on-surface">
+        Stock Management
       </h2>
 
-      <div className="space-y-6">
-        {products.map(product => (
-          <div
+      <div className="space-y-3">
+        {products.map((product, i) => (
+          <motion.div
             key={product.id}
-            className="bg-white shadow rounded-xl p-6 flex justify-between items-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.04 }}
+            className="bg-surface-lowest rounded-xl p-6 flex justify-between items-center
+                       transition-colors duration-200 hover:bg-surface-high group"
           >
             <div>
-              <h3 className="text-xl font-semibold">
+              <h3 className="font-body text-lg font-semibold text-on-surface">
                 {product.name}
               </h3>
-              <p className="text-gray-600">
-                Current Stock: {product.quantity}
+              <p className="text-on-surface/50 text-sm font-body mt-1">
+                Current Stock: <span className="font-display text-xl font-bold text-on-surface">{product.quantity}</span>
               </p>
             </div>
 
-            <div className="space-x-3">
+            <div className="flex gap-2 opacity-70 group-hover:opacity-100 transition-opacity">
               <button
                 onClick={() => handleStockIn(product.id)}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+                className="bg-secondary-container text-on-secondary-container px-5 py-2 rounded-lg text-sm font-body font-semibold transition-colors hover:opacity-80"
               >
                 + Add
               </button>
 
               <button
                 onClick={() => handleStockOut(product.id)}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+                className="bg-error-container text-on-error-container px-5 py-2 rounded-lg text-sm font-body font-semibold transition-colors hover:opacity-80"
               >
-                - Remove
+                − Remove
               </button>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

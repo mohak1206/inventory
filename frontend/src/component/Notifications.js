@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
+import { motion, AnimatePresence } from "framer-motion";
 
 const socket = io("http://127.0.0.1:5000");
 
@@ -20,44 +21,63 @@ export default function Notifications() {
       {/* Bell Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="relative bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 duration-200"
+        className="relative w-9 h-9 rounded-lg bg-surface-high flex items-center justify-center hover:bg-surface-highest transition-colors"
       >
-        🔔
+        <span className="text-base">🔔</span>
         {notifications.length > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-2 rounded-full">
+          <span className="absolute -top-1.5 -right-1.5 bg-on-error-container text-on-primary text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
             {notifications.length}
           </span>
         )}
       </button>
 
-      {/* Dropdown */}
-      {open && (
-        <div className="absolute right-0 mt-3 w-80 bg-white shadow-2xl rounded-lg overflow-hidden">
-          <h3 className="bg-gray-800 text-white text-center py-2">
-            Realtime Alerts
-          </h3>
+      {/* Dropdown — Glassmorphism */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="absolute right-0 mt-3 w-80 rounded-xl shadow-ambient overflow-hidden z-50"
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.92)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+            }}
+          >
+            <div className="px-5 py-3 bg-primary">
+              <h3 className="text-sm font-display font-bold text-on-primary">
+                Realtime Alerts
+              </h3>
+            </div>
 
-          <div className="max-h-80 overflow-y-auto">
-            {notifications.length === 0 ? (
-              <p className="p-4 text-center text-gray-500">
-                No notifications yet
-              </p>
-            ) : (
-              notifications.map((n, i) => (
-                <div
-                  key={i}
-                  className="p-3 border-b hover:bg-gray-100 duration-200"
-                >
-                  {/* ⭐ SAFE RENDER FIX */}
-                  {typeof n === "object"
-                    ? n.message || JSON.stringify(n)
-                    : n}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
+            <div className="max-h-80 overflow-y-auto">
+              {notifications.length === 0 ? (
+                <p className="p-5 text-center text-on-surface/40 font-body text-sm">
+                  No notifications yet
+                </p>
+              ) : (
+                notifications.map((n, i) => (
+                  <div
+                    key={i}
+                    className={`
+                      p-4 font-body text-sm text-on-surface
+                      transition-colors hover:bg-surface-high
+                      ${i % 2 === 0 ? "bg-surface-low" : "bg-surface-lowest"}
+                    `}
+                  >
+                    {/* ⭐ SAFE RENDER FIX */}
+                    {typeof n === "object"
+                      ? n.message || JSON.stringify(n)
+                      : n}
+                  </div>
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

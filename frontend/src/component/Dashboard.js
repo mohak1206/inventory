@@ -30,55 +30,62 @@ export default function Dashboard() {
     return new Date(t.created_at).toDateString() === today;
   }).length;
 
+  const kpiCards = [
+    {
+      label: "Total Products",
+      value: totalProducts,
+      icon: "📦",
+      accent: "text-primary-fixed-dim",
+    },
+    {
+      label: "Low Stock",
+      value: lowStock,
+      icon: "⚠️",
+      accent: "text-on-error-container",
+    },
+    {
+      label: "Today's Transactions",
+      value: todayTransactions,
+      icon: "💸",
+      accent: "text-primary",
+    },
+  ];
+
   return (
     <motion.div
-      className="space-y-8"
+      className="space-y-10"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
 
       {/* PAGE TITLE */}
-      <h2 className="text-3xl font-bold">
-        Dashboard 📊
+      <h2 className="font-display text-3xl font-bold text-on-surface">
+        Dashboard
       </h2>
 
-      {/* SUMMARY CARDS */}
+      {/* SUMMARY CARDS — Statement Figures */}
       <div className="grid grid-cols-3 gap-6">
-
-        {/* TOTAL PRODUCTS */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-6 rounded-xl shadow-lg"
-        >
-          <h3 className="text-lg">Total Products</h3>
-          <p className="text-4xl font-bold mt-2">
-            {totalProducts}
-          </p>
-        </motion.div>
-
-        {/* LOW STOCK */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="bg-gradient-to-r from-red-500 to-red-700 text-white p-6 rounded-xl shadow-lg"
-        >
-          <h3 className="text-lg">Low Stock</h3>
-          <p className="text-4xl font-bold mt-2">
-            {lowStock}
-          </p>
-        </motion.div>
-
-        {/* TODAY TRANSACTIONS */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="bg-gradient-to-r from-green-500 to-green-700 text-white p-6 rounded-xl shadow-lg"
-        >
-          <h3 className="text-lg">Today's Transactions</h3>
-          <p className="text-4xl font-bold mt-2">
-            {todayTransactions}
-          </p>
-        </motion.div>
-
+        {kpiCards.map((card, i) => (
+          <motion.div
+            key={card.label}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            whileHover={{ y: -4 }}
+            className="bg-surface-lowest rounded-xl p-8 shadow-ambient transition-all duration-300"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-2xl">{card.icon}</span>
+              <span className={`text-xs font-body font-semibold uppercase tracking-widest ${card.accent}`}>
+                {card.label}
+              </span>
+            </div>
+            <p className="font-display text-5xl font-extrabold text-on-surface">
+              {card.value}
+            </p>
+          </motion.div>
+        ))}
       </div>
 
       {/* LOW STOCK LIST PREVIEW */}
@@ -86,14 +93,14 @@ export default function Dashboard() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="bg-white shadow rounded-xl p-6"
+        className="bg-surface-lowest rounded-xl p-8 shadow-ambient"
       >
-        <h3 className="text-xl font-semibold mb-4">
-          Low Stock Alerts ⚠
+        <h3 className="font-display text-xl font-bold text-on-surface mb-6">
+          Low Stock Alerts
         </h3>
 
         {lowStock === 0 ? (
-          <p className="text-gray-500">
+          <p className="text-on-surface/50 font-body">
             All products are sufficiently stocked.
           </p>
         ) : (
@@ -103,10 +110,12 @@ export default function Dashboard() {
               .map(p => (
                 <div
                   key={p.id}
-                  className="flex justify-between bg-red-50 border border-red-200 p-3 rounded-lg"
+                  className="flex justify-between items-center bg-error-container/40 p-4 rounded-lg transition-colors hover:bg-error-container/60"
                 >
-                  <span>{p.name}</span>
-                  <span className="text-red-600 font-bold">
+                  <span className="font-body font-medium text-on-surface">
+                    {p.name}
+                  </span>
+                  <span className="chip-error">
                     Qty: {p.quantity}
                   </span>
                 </div>

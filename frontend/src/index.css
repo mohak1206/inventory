@@ -1,3 +1,94 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Architectural Ledger: Base Layer ── */
+@layer base {
+  body {
+    font-family: "Inter", sans-serif;
+    color: #181c20;                      /* never #000000 */
+    background-color: #f7f9ff;           /* surface */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Manrope", sans-serif;
+    color: #181c20;
+  }
+
+  /* No-Line table resets */
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  th, td {
+    border: none;
+  }
+}
+
+/* ── Ghost Border Utility ── */
+@layer utilities {
+  .ghost-border {
+    outline: 1px solid rgba(191, 200, 202, 0.15);   /* outline-variant @ 15% */
+  }
+
+  .ghost-border-bottom {
+    border-bottom: 1px solid rgba(191, 200, 202, 0.20);
+  }
+}
+
+/* ── Ledger Input ── */
+@layer components {
+  .ledger-input {
+    @apply w-full px-4 py-3 bg-surface-highest rounded-lg font-body text-on-surface;
+    border: none;
+    border-bottom: 1px solid rgba(111, 121, 123, 0.25);  /* outline @ 25% */
+    outline: none;
+    transition: border-color 0.2s ease, border-width 0.2s ease;
+  }
+
+  .ledger-input:focus {
+    border-bottom: 2px solid #004048;
+  }
+
+  .ledger-input::placeholder {
+    color: rgba(24, 28, 32, 0.4);
+  }
+
+  /* Gradient primary button */
+  .btn-primary {
+    @apply px-5 py-2.5 rounded-lg font-body font-semibold text-on-primary;
+    background: linear-gradient(135deg, #004048, #005963);
+    transition: opacity 0.2s ease, transform 0.15s ease;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  /* Status chips */
+  .chip {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold font-body;
+  }
+
+  .chip-success {
+    @apply chip;
+    background-color: #d0ffd6;
+    color: #00210a;
+  }
+
+  .chip-error {
+    @apply chip;
+    background-color: #ffdad6;
+    color: #410002;
+  }
+
+  .chip-warning {
+    @apply chip;
+    background-color: #ffdea8;
+    color: #261900;
+  }
+}
