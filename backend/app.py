@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
+from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 # ================= DB CONNECTION FUNCTION =================
@@ -56,6 +58,8 @@ def add_product():
     cur.close()
     conn.close()
 
+    socketio.emit("notification", {"message": f"New Product Added: {name}"})
+
     return jsonify({"msg": "Product added"})
 
 
@@ -95,6 +99,8 @@ def delete_product(id):
 
     cur.close()
     conn.close()
+
+    socketio.emit("notification", {"message": f"Product Deleted (ID: {id})"})
 
     return jsonify({"msg": "Deleted"})
 
@@ -146,6 +152,8 @@ def stock_in():
     cur.close()
     conn.close()
 
+    socketio.emit("notification", {"message": f"Stock IN: {quantity} units added for Product ID {product_id}"})
+
     return jsonify({"msg": "Stock added"})
 
 
@@ -173,6 +181,8 @@ def stock_out():
     conn.commit()
     cur.close()
     conn.close()
+
+    socketio.emit("notification", {"message": f"Stock OUT: {quantity} units removed for Product ID {product_id}"})
 
     return jsonify({"msg": "Stock removed"})
 
@@ -210,4 +220,4 @@ def login():
 
 # ================= RUN APP =================
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    socketio.run(app, debug=True, port=5000)
