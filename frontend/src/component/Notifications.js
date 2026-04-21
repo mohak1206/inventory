@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -7,6 +7,26 @@ const socket = io("http://127.0.0.1:5000");
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  const handleClose = () => {
+    if (open) {
+      setOpen(false);
+      setNotifications([]);
+    }
+  };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        handleClose();
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
 
   useEffect(() => {
     socket.on("notification", (data) => {
@@ -17,10 +37,20 @@ export default function Notifications() {
   }, []);
 
   return (
-    <div className="relative">
+    <div 
+      className="relative" 
+      ref={containerRef}
+      onMouseLeave={handleClose}
+    >
       {/* Bell Button */}
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          if (open) {
+            handleClose();
+          } else {
+            setOpen(true);
+          }
+        }}
         className="relative w-9 h-9 rounded-lg bg-surface-high flex items-center justify-center hover:bg-surface-highest transition-colors"
       >
         <span className="text-base">🔔</span>
@@ -61,8 +91,9 @@ export default function Notifications() {
                 notifications.map((n, i) => (
                   <div
                     key={i}
+                    onClick={handleClose}
                     className={`
-                      p-4 font-body text-sm text-on-surface
+                      p-4 font-body text-sm text-on-surface cursor-pointer
                       transition-colors hover:bg-surface-high
                       ${i % 2 === 0 ? "bg-surface-low" : "bg-surface-lowest"}
                     `}
