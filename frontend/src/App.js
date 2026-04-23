@@ -2,17 +2,17 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "./layout/MainLayout";
-import Dashboard from "./component/Dashboard";
-import Products from "./component/Products";
-import Stock from "./component/Stock";
-import Analytics from "./component/Analytics";
-import Reports from "./component/Reports";
-import Transactions from "./component/Transactions";
-import Profile from "./component/Profile";
-import About from "./component/About";
-import Contact from "./component/Contact";
-import Login from "./component/Login";
-import ProtectedRoute from "./component/ProtectedRoute";
+import Dashboard from "./components/pages/Dashboard";
+import Products from "./components/pages/Products";
+import Stock from "./components/pages/Stock";
+import Analytics from "./components/pages/Analytics";
+import Reports from "./components/pages/Reports";
+import Transactions from "./components/pages/Transactions";
+import Profile from "./components/pages/Profile";
+import About from "./components/pages/About";
+import Contact from "./components/pages/Contact";
+import Login from "./components/auth/Login";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 export default function App() {
   return (

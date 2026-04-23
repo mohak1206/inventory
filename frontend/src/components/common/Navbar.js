@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Notifications from "./Notifications";
+import Notifications from "../pages/Notifications";
 
 export default function Navbar() {
   const navigate = useNavigate();
