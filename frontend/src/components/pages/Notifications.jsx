@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import io from "socket.io-client";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -9,12 +9,12 @@ export default function Notifications() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (open) {
       setOpen(false);
       setNotifications([]);
     }
-  };
+  }, [open]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -26,7 +26,7 @@ export default function Notifications() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [open]);
+  }, [open, handleClose]);
 
   useEffect(() => {
     socket.on("notification", (data) => {

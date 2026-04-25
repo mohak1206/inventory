@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 
 export default function Stock() {
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = () => {
-    fetch("http://127.0.0.1:5000/products")
+  const fetchProducts = useCallback(() => {
+    fetch("/products")
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(err => console.log(err));
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleStockIn = async (id) => {
     const qty = prompt("Enter quantity to add:");
     if (!qty) return;
 
-    await fetch("http://127.0.0.1:5000/stock/in", {
+    await fetch("/stock/in", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -35,7 +35,7 @@ export default function Stock() {
     const qty = prompt("Enter quantity to remove:");
     if (!qty) return;
 
-    await fetch("http://127.0.0.1:5000/stock/out", {
+    await fetch("/stock/out", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

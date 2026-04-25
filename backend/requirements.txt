@@ -2,3 +2,5 @@ flask
 flask-cors
 flask-socketio
 mysql-connector-python
+waitress
+flask-caching

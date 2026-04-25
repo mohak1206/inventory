@@ -13,7 +13,7 @@ export default function Analytics() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/products")
+    fetch("/products")
       .then(res => res.json())
       .then(products => {
         const formatted = products.map(p => ({

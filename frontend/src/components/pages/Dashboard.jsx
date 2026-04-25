@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 
 export default function Dashboard() {
   const [products, setProducts] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
+  const fetchProducts = useCallback(async () => {
+    const res = await fetch("/products");
+    const data = await res.json();
+    setProducts(data);
+  }, []);
+
+  const fetchTransactions = useCallback(async () => {
+    const res = await fetch("/transactions");
+    const data = await res.json();
+    setTransactions(data);
+  }, []);
+
   useEffect(() => {
     fetchProducts();
     fetchTransactions();
-  }, []);
-
-  const fetchProducts = async () => {
-    const res = await fetch("http://127.0.0.1:5000/products");
-    const data = await res.json();
-    setProducts(data);
-  };
-
-  const fetchTransactions = async () => {
-    const res = await fetch("http://127.0.0.1:5000/transactions");
-    const data = await res.json();
-    setTransactions(data);
-  };
+  }, [fetchProducts, fetchTransactions]);
 
   const totalProducts = products.length;
   const lowStock = products.filter(p => p.quantity < 10).length;

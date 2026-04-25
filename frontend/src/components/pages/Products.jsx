@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Products() {
@@ -9,9 +9,9 @@ export default function Products() {
   const [quantity, setQuantity] = useState("");
 
   // ================= FETCH PRODUCTS =================
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
-      const res = await fetch("http://127.0.0.1:5000/products");
+      const res = await fetch("/products");
       if (!res.ok) throw new Error("Failed to fetch products");
 
       const data = await res.json();
@@ -20,16 +20,16 @@ export default function Products() {
       console.error(error);
       alert("Error loading products");
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   // ================= ADD PRODUCT =================
   const handleAdd = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:5000/products", {
+      const res = await fetch("/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export default function Products() {
   const handleUpdate = async () => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:5000/products/${editingProduct.id}`,
+        `/products/${editingProduct.id}`,
         {
           method: "PUT",
           headers: {
@@ -94,7 +94,7 @@ export default function Products() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:5000/products/${id}`,
+        `/products/${id}`,
         {
           method: "DELETE",
         }

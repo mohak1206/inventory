@@ -2,10 +2,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 from flask_socketio import SocketIO, emit
+from flask_caching import Cache
 
 app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
+
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 30})
+cache.init_app(app)
 
 
 # ================= DB CONNECTION FUNCTION =================
@@ -20,6 +24,7 @@ def get_db_connection():
 
 # ================= GET PRODUCTS =================
 @app.route("/products", methods=["GET"])
+@cache.cached()
 def get_products():
     conn = get_db_connection()
     cur = conn.cursor(dictionary=True)
@@ -60,6 +65,9 @@ def add_product():
 
     socketio.emit("notification", {"message": f"New Product Added: {name}"})
 
+    cache.delete('view//products')
+    cache.delete('view//dashboard')
+
     return jsonify({"msg": "Product added"})
 
 
@@ -85,6 +93,9 @@ def update_product(id):
     cur.close()
     conn.close()
 
+    cache.delete('view//products')
+    cache.delete('view//dashboard')
+
     return jsonify({"msg": "Product updated"})
 
 
@@ -101,6 +112,9 @@ def delete_product(id):
     conn.close()
 
     socketio.emit("notification", {"message": f"Product Deleted (ID: {id})"})
+
+    cache.delete('view//products')
+    cache.delete('view//dashboard')
 
     return jsonify({"msg": "Deleted"})
 
@@ -154,6 +168,10 @@ def stock_in():
 
     socketio.emit("notification", {"message": f"Stock IN: {quantity} units added for Product ID {product_id}"})
 
+    cache.delete('view//products')
+    cache.delete('view//transactions')
+    cache.delete('view//dashboard')
+
     return jsonify({"msg": "Stock added"})
 
 
@@ -184,11 +202,16 @@ def stock_out():
 
     socketio.emit("notification", {"message": f"Stock OUT: {quantity} units removed for Product ID {product_id}"})
 
+    cache.delete('view//products')
+    cache.delete('view//transactions')
+    cache.delete('view//dashboard')
+
     return jsonify({"msg": "Stock removed"})
 
 
 # ================= GET TRANSACTIONS =================
 @app.route("/transactions", methods=["GET"])
+@cache.cached()
 def get_transactions():
     conn = get_db_connection()
     cur = conn.cursor(dictionary=True)
@@ -220,4 +243,9 @@ def login():
 
 # ================= RUN APP =================
 if __name__ == "__main__":
-    socketio.run(app, debug=True, port=5000)
+    import os
+    if os.environ.get('FLASK_ENV') == 'development':
+        socketio.run(app, debug=True, port=5000)
+    else:
+        from waitress import serve
+        serve(app, host='127.0.0.1', port=5000)

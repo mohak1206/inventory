@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -7,22 +7,22 @@ export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
   const [products, setProducts] = useState([]);
 
+  const fetchTransactions = useCallback(async () => {
+    const res = await fetch("/transactions");
+    const data = await res.json();
+    setTransactions(data);
+  }, []);
+
+  const fetchProducts = useCallback(async () => {
+    const res = await fetch("/products");
+    const data = await res.json();
+    setProducts(data);
+  }, []);
+
   useEffect(() => {
     fetchTransactions();
     fetchProducts();
-  }, []);
-
-  const fetchTransactions = async () => {
-    const res = await fetch("http://127.0.0.1:5000/transactions");
-    const data = await res.json();
-    setTransactions(data);
-  };
-
-  const fetchProducts = async () => {
-    const res = await fetch("http://127.0.0.1:5000/products");
-    const data = await res.json();
-    setProducts(data);
-  };
+  }, [fetchTransactions, fetchProducts]);
 
   // Build a product name lookup map
   const productMap = {};
